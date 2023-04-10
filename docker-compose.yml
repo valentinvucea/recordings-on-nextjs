@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  next-app:
+    container_name: next-app
+    build:
+      context: ./
+      args:
+        ENV_VARIABLE: ${ENV_VARIABLE}
+        NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/app:z
+    depends_on:
+      - next-db   
+    networks:
+      - my_network
+
+  next-db:
+    container_name: 'next-db'
+    image: mariadb:10.6.8
+    restart: 'always'
+    networks:
+      - backend
+    ports:
+      - "3317:3306"
+    networks:
+      - my_network      
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+    volumes:
+      - ./db/data:/var/lib/mysql
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  my_network:
+    external: true
