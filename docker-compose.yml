@@ -25,7 +25,7 @@ services:
     networks:
       - backend
     ports:
-      - "3317:3306"
+      - "3367:3306"
     networks:
       - my_network      
     environment:
